@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.example.kuro.spapractice02"
+        applicationId "com.example.kuro.spaprac2"
         minSdkVersion 21
         targetSdkVersion 22
         versionCode 1

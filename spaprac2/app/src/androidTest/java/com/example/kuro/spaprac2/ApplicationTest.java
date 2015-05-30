@@ -1,4 +1,4 @@
-package com.example.kuro.spapractice02;
+package com.example.kuro.spaprac2;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
