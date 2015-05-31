@@ -8,21 +8,51 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
 public class MainActivity extends FragmentActivity {
 
     private GoogleMap mMap;
+    private View childView,containerView;
+
+    private Animation inAnimation;
+    private Animation outAnimation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        containerView = findViewById(R.id.container);
+        childView = findViewById(R.id.childview);
+        inAnimation = (Animation) AnimationUtils.loadAnimation(this, R.anim.in_animetion);
+        outAnimation= (Animation) AnimationUtils.loadAnimation(this, R.anim.out_animetion);
+        containerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // ビューが表示されてるか判定
+                if (childView.getVisibility() == View.GONE) {
+                    // アニメーションしながらViewを表示
+                    childView.startAnimation(inAnimation);
+                    childView.setVisibility(View.VISIBLE);
+                } else {
+                    // アニメーションしながらViewを隠す
+                    childView.startAnimation(outAnimation);
+                    childView.setVisibility(View.GONE);
+                }
+            }
+        });
+
         setUpMapIfNeeded();
     }
 
@@ -71,7 +101,7 @@ public class MainActivity extends FragmentActivity {
     {
         LatLng sydney = new LatLng(-33.867,151.206);
         LatLng tokyo = new LatLng(35.681382,139.766084);
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         /*
         * Othe supported types include : MAP_TYPE_NORMAL,
         * MAP_TYPE_TERRAIN,MAP_HYBRID and MAP_TYPE_NONE
@@ -80,13 +110,19 @@ public class MainActivity extends FragmentActivity {
         //CameraPosition camerapos = new CameraPosition.Builder()
         //        .target(new LatLng(35.681382,139.766084)).zoom(15.5f).build();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tokyo, 13));
+        BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+        //.fromResource(R.drawable.hogehoge); //ロゴの指定ができます
         mMap.addMarker(new MarkerOptions()
                 .title("東京駅")
                 .snippet("記念suicaが馬鹿売れした")
-                .position(tokyo));
+                .position(tokyo)
+                .icon(icon)
+                );
         LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         Location myLocate = locationManager.getLastKnownLocation("gps");
         System.out.println();
 
     }
 }
+
+
