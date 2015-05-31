@@ -26,9 +26,10 @@
         android:textSize="30sp"
         android:textColor="#e2f2f8"
         android:visibility="gone"
-        android:background="#17abe1"
+        android:background="#8cc63f"
         android:layout_alignParentBottom="true"
         />
+
 
     <LinearLayout
         android:layout_width="150dp"

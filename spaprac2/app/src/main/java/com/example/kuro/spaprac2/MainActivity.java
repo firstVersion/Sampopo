@@ -25,10 +25,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MainActivity extends FragmentActivity {
 
     private GoogleMap mMap;
-    private View childView,containerView;
+    private View childView,containerView,wahhoi;
 
-    private Animation inAnimation;
-    private Animation outAnimation;
+    private Animation inAnimation,outAnimation;
+    private Animation binAnimation,boutAnimation;
     private static MarkerOptions mMyMarkerOptions = null;
     int flag = 0;
 
@@ -51,6 +51,7 @@ public class MainActivity extends FragmentActivity {
                     // アニメーションしながらViewを表示
                     childView.startAnimation(inAnimation);
                     childView.setVisibility(View.VISIBLE);
+
                 } else {
                     // アニメーションしながらViewを隠す
                     childView.startAnimation(outAnimation);
