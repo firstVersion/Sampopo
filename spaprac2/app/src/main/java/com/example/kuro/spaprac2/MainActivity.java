@@ -39,7 +39,7 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        containerView = findViewById(R.id.container);
+        containerView = findViewById(R.id.menu);
         childView = findViewById(R.id.childview);
         inAnimation = (Animation) AnimationUtils.loadAnimation(this, R.anim.in_animetion);
         outAnimation= (Animation) AnimationUtils.loadAnimation(this, R.anim.out_animetion);
