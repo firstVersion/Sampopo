@@ -1,6 +1,5 @@
 package com.example.kuro.spaprac2;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
@@ -11,7 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-
+import android.widget.ImageView;
+import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -29,6 +29,12 @@ public class MainActivity extends FragmentActivity {
 
     private Animation inAnimation;
     private Animation outAnimation;
+    private static MarkerOptions mMyMarkerOptions = null;
+    int flag = 0;
+
+    private Marker mMarker;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,50 +85,126 @@ public class MainActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setUpMapIfNeeded()
-    {
+    private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
             // Check if we were successful in obtaining the map.
-            if (mMap != null)
-            {
+            if (mMap != null) {
+
+
                 setUpMap();
                 mapInit();
+
+                mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                    @Override
+                    public void onMapLongClick(LatLng latLng) {
+                        mMyMarkerOptions = new MarkerOptions();
+                        mMyMarkerOptions.position(latLng);
+                        System.out.println(latLng);
+
+// 古いピンを消去する
+                        //   mMap.clear();
+// タップした位置にピンを立てる
+                        mMap.addMarker(mMyMarkerOptions);
+                        flag = 1;
+                        // info(private double mLatitude,private double mLongitude);
+
+// 逆ジオコーディングでピンを立てた位置の住所を取得する
+                        //       requestReverseGeocode(latLng.latitude, latLng.longitude);
+
+
+                    }
+
+
+                });
+
+
             }
         }
     }
+
     private void setUpMap() {
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
-    private void mapInit()
-    {
-        LatLng sydney = new LatLng(-33.867,151.206);
-        LatLng tokyo = new LatLng(35.681382,139.766084);
+
+
+    private void mapInit() {
+        LatLng sydney = new LatLng(-33.867, 151.206);
+        LatLng tokyo = new LatLng(35.681382, 139.766084);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         /*
         * Othe supported types include : MAP_TYPE_NORMAL,
         * MAP_TYPE_TERRAIN,MAP_HYBRID and MAP_TYPE_NONE
         * */
+        //  mMap.setBuiltInZoomControls(true);
         mMap.setMyLocationEnabled(true);
+        mMap.setInfoWindowAdapter(new CustomInfoAdapter());
         //CameraPosition camerapos = new CameraPosition.Builder()
         //        .target(new LatLng(35.681382,139.766084)).zoom(15.5f).build();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tokyo, 13));
-        BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-        //.fromResource(R.drawable.hogehoge); //ロゴの指定ができます
-        mMap.addMarker(new MarkerOptions()
+
+
+        BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+//        .fromResource(R.drawable.ic_logo);//マーカーを画像にする
+     mMarker =   mMap.addMarker(new MarkerOptions()
                 .title("東京駅")
                 .snippet("記念suicaが馬鹿売れした")
                 .position(tokyo)
-                .icon(icon)
-                );
-        LocationManager locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+                .icon(icon));
+
+
+
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
         Location myLocate = locationManager.getLastKnownLocation("gps");
         System.out.println();
 
     }
-}
 
+
+    /*------------------------------------------------------------------------------------*/
+
+
+    private class CustomInfoAdapter implements GoogleMap.InfoWindowAdapter {
+
+        /** Window の View. */
+        private final View mWindow;
+
+        /**
+         * コンストラクタ.
+         */
+        public CustomInfoAdapter() {
+            mWindow = getLayoutInflater().inflate(R.layout.detail, null);
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            render(marker, mWindow);
+            return mWindow;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {
+            return null;
+        }
+
+        private void render(Marker marker, View view) {
+            // ここでどの Marker がタップされたか判別する
+            if (marker.equals(mMarker)) {
+                // 画像
+                ImageView badge = (ImageView) view.findViewById(R.id.camera);
+                badge.setImageResource(R.drawable.camera);
+            }
+            TextView title = (TextView) view.findViewById(R.id.title);
+            TextView snippet = (TextView) view.findViewById(R.id.snippet);
+            title.setText(marker.getTitle());
+            snippet.setText(marker.getSnippet());
+        }
+
+    }
+
+}
 
