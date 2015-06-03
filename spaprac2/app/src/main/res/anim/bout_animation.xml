@@ -4,6 +4,7 @@
     android:duration="500"
     android:fillAfter="false"
     android:toXDelta="0"
-    android:toYDelta="20%p"
+    android:toYDelta="0%p"
     android:fromXDelta="0"
-    android:fromYDelta="0%p" />
+    android:fromYDelta="-20%p" />
+
